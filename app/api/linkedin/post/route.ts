@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { decryptToken, postToLinkedIn } from '@/lib/linkedin'
+import { getPostHog } from '@/lib/analytics'
 
 export async function POST(request: Request) {
   const cookieStore = await cookies()
@@ -31,6 +32,11 @@ export async function POST(request: Request) {
 
   try {
     await postToLinkedIn(tokenData.accessToken, tokenData.personId, text)
+    getPostHog()?.capture({
+      distinctId: tokenData.personId,
+      event: 'post_published',
+      properties: { finalLength: text.length },
+    })
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('LinkedIn post error:', err)

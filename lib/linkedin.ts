@@ -9,7 +9,7 @@ function getKey(): Buffer {
   return Buffer.from(raw.padEnd(KEY_LEN, '0').slice(0, KEY_LEN))
 }
 
-export function encryptToken(data: { accessToken: string; personId: string }): string {
+export function encryptToken(data: { accessToken: string; personId: string; name?: string }): string {
   const iv = randomBytes(12)
   const cipher = createCipheriv(ALGORITHM, getKey(), iv)
   const plain = JSON.stringify(data)
@@ -18,7 +18,7 @@ export function encryptToken(data: { accessToken: string; personId: string }): s
   return Buffer.concat([iv, tag, encrypted]).toString('base64url')
 }
 
-export function decryptToken(encoded: string): { accessToken: string; personId: string } | null {
+export function decryptToken(encoded: string): { accessToken: string; personId: string; name?: string } | null {
   try {
     const buf = Buffer.from(encoded, 'base64url')
     const iv = buf.subarray(0, 12)
@@ -49,7 +49,7 @@ export function buildAuthUrl(state: string, returnTo: string): string {
 
 export async function exchangeCodeForToken(
   code: string
-): Promise<{ accessToken: string; personId: string }> {
+): Promise<{ accessToken: string; personId: string; name: string }> {
   const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/linkedin/callback`
   const res = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
     method: 'POST',
@@ -74,10 +74,10 @@ export async function exchangeCodeForToken(
   })
   if (!meRes.ok) throw new Error('Failed to fetch LinkedIn profile')
   const profile = await meRes.json()
-  // sub is the LinkedIn member URN id
   const personId = profile.sub as string
+  const name = (profile.name ?? profile.given_name ?? '') as string
 
-  return { accessToken: access_token, personId }
+  return { accessToken: access_token, personId, name }
 }
 
 export async function postToLinkedIn(

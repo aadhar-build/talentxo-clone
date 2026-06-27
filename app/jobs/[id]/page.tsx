@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { cookies } from 'next/headers'
 import {
   MapPin,
   Briefcase,
@@ -10,7 +9,6 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { getJob, timeAgo } from '@/lib/jobs'
-import { generatePostText, decryptToken } from '@/lib/linkedin'
 import LinkedInButton from '@/components/LinkedInButton'
 
 const functionColors: Record<string, string> = {
@@ -25,13 +23,6 @@ export default async function JobDetailPage(props: PageProps<'/jobs/[id]'>) {
   const { id } = await props.params
   const job = getJob(id)
   if (!job) notFound()
-
-  // Check LinkedIn auth
-  const cookieStore = await cookies()
-  const tokenCookie = cookieStore.get('li_token')?.value
-  const isAuthenticated = !!(tokenCookie && decryptToken(tokenCookie))
-
-  const postText = generatePostText(job)
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -128,11 +119,7 @@ export default async function JobDetailPage(props: PageProps<'/jobs/[id]'>) {
               <ExternalLink className="w-4 h-4" />
             </a>
 
-            <LinkedInButton
-              postText={postText}
-              isAuthenticated={isAuthenticated}
-              returnTo={`/jobs/${job.id}`}
-            />
+            <LinkedInButton jobId={job.id} />
           </div>
 
           <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 space-y-3">
@@ -158,11 +145,7 @@ export default async function JobDetailPage(props: PageProps<'/jobs/[id]'>) {
         >
           Apply Now
         </a>
-        <LinkedInButton
-          postText={postText}
-          isAuthenticated={isAuthenticated}
-          returnTo={`/jobs/${job.id}`}
-        />
+        <LinkedInButton jobId={job.id} />
       </div>
     </div>
   )

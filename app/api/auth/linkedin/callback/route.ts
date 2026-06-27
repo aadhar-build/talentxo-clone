@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { exchangeCodeForToken, encryptToken } from '@/lib/linkedin'
+import { getPostHog } from '@/lib/analytics'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -27,17 +28,21 @@ export async function GET(request: Request) {
 
   cookieStore.delete('li_oauth_state')
 
+  let personId = ''
   try {
-    const { accessToken, personId } = await exchangeCodeForToken(code)
-    const encrypted = encryptToken({ accessToken, personId })
+    const token = await exchangeCodeForToken(code)
+    personId = token.personId
+    const encrypted = encryptToken({ accessToken: token.accessToken, personId: token.personId, name: token.name })
 
     cookieStore.set('li_token', encrypted, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 60, // 60 days (LinkedIn token lifetime)
+      maxAge: 60 * 60 * 24 * 60,
       path: '/',
     })
+
+    getPostHog()?.capture({ distinctId: token.personId, event: 'linkedin_connected' })
   } catch (err) {
     console.error('LinkedIn token exchange error:', err)
     redirect('/jobs?error=token_exchange_failed')

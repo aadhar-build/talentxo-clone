@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 function LinkedInIcon() {
   return (
@@ -11,38 +10,20 @@ function LinkedInIcon() {
   )
 }
 
-const PostModal = dynamic(() => import('./PostModal'), { ssr: false })
-
 type Props = {
-  postText: string
-  isAuthenticated: boolean
-  returnTo: string
+  jobId: string
 }
 
-export default function LinkedInButton({ postText, isAuthenticated, returnTo }: Props) {
-  const [showModal, setShowModal] = useState(false)
-
-  const handleClick = () => {
-    if (!isAuthenticated) {
-      window.location.href = `/api/auth/linkedin?returnTo=${encodeURIComponent(returnTo)}`
-      return
-    }
-    setShowModal(true)
-  }
+export default function LinkedInButton({ jobId }: Props) {
+  const router = useRouter()
 
   return (
-    <>
-      <button
-        onClick={handleClick}
-        className="flex items-center justify-center gap-2 w-full bg-[#0A66C2] hover:bg-[#084d93] text-white font-semibold py-3 px-6 rounded-xl transition-colors"
-      >
-        <LinkedInIcon />
-        Post to LinkedIn
-      </button>
-
-      {showModal && (
-        <PostModal initialText={postText} onClose={() => setShowModal(false)} />
-      )}
-    </>
+    <button
+      onClick={() => router.push(`/jobs/${jobId}/share`)}
+      className="flex items-center justify-center gap-2 w-full bg-[#0A66C2] hover:bg-[#084d93] text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+    >
+      <LinkedInIcon />
+      Post to LinkedIn
+    </button>
   )
 }
