@@ -1,0 +1,437 @@
+[
+  {
+    "id": "job-001",
+    "title": "Senior Product Manager – Payments",
+    "company": "Razorpay",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹40L – ₹60L",
+    "jobType": "Full-time",
+    "experience": "5–8 years",
+    "function": "Product",
+    "postedDate": "2026-06-20",
+    "tags": ["Fintech", "Payments", "B2C"],
+    "description": "Razorpay is looking for a Senior Product Manager to own the core payments experience for millions of merchants across India. You will define the product strategy, drive cross-functional execution, and work closely with engineering, design, data science, and business teams to deliver world-class payment solutions. You will be expected to deeply understand merchant pain points, identify opportunities to improve conversion rates, and lead initiatives that directly impact business revenue.",
+    "requirements": [
+      "5+ years of product management experience, preferably in fintech or payments",
+      "Strong analytical skills with experience using SQL and data tools",
+      "Track record of shipping 0-to-1 products in fast-moving environments",
+      "Excellent stakeholder management and communication skills",
+      "Experience working with engineering teams in an agile environment",
+      "Deep understanding of Indian payments ecosystem (UPI, cards, BNPL)"
+    ],
+    "niceToHave": [
+      "Prior experience at a fintech startup or bank",
+      "MBA from a top-tier institution",
+      "Experience with B2B SaaS products"
+    ],
+    "aboutCompany": "Razorpay is India's leading payment gateway, processing billions of dollars in transactions every year. We power payments for over 8 million businesses including Airtel, BSE, and Yatra. Our mission is to make money movement simple for every Indian business.",
+    "applyUrl": "https://razorpay.com/jobs/"
+  },
+  {
+    "id": "job-002",
+    "title": "Staff Engineer – Platform",
+    "company": "PhonePe",
+    "location": "Bangalore, India",
+    "locationType": "On-site",
+    "salary": "₹60L – ₹90L",
+    "jobType": "Full-time",
+    "experience": "8–12 years",
+    "function": "Engineering",
+    "postedDate": "2026-06-18",
+    "tags": ["Java", "Distributed Systems", "Microservices"],
+    "description": "PhonePe is hiring a Staff Engineer to join the Platform team responsible for building the foundational infrastructure that powers 500M+ users. You will architect, design, and implement large-scale distributed systems, mentor a team of senior engineers, and define engineering standards across the organisation. This role requires deep technical expertise and the ability to influence technical direction at the company level.",
+    "requirements": [
+      "8+ years of software engineering experience with at least 3 years at Staff level",
+      "Expert-level proficiency in Java or Go",
+      "Experience building and operating distributed systems at massive scale",
+      "Strong understanding of database internals, consensus algorithms, and event streaming",
+      "Proven experience in system design, capacity planning, and reliability engineering",
+      "Excellent written and verbal communication skills"
+    ],
+    "niceToHave": [
+      "Experience with Kafka, Cassandra, or similar technologies",
+      "Open-source contributions",
+      "Experience in the fintech domain"
+    ],
+    "aboutCompany": "PhonePe is India's largest digital payments platform with 500 million registered users. Built on UPI, PhonePe has expanded into financial services, insurance, and commerce. We are a Walmart-owned company headquartered in Bangalore.",
+    "applyUrl": "https://phonepe.com/careers/"
+  },
+  {
+    "id": "job-003",
+    "title": "Head of Design",
+    "company": "CRED",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹50L – ₹80L",
+    "jobType": "Full-time",
+    "experience": "10+ years",
+    "function": "Design",
+    "postedDate": "2026-06-15",
+    "tags": ["Product Design", "Design Systems", "Leadership"],
+    "description": "CRED is seeking a Head of Design to lead our design organisation and set the creative vision for one of India's most beloved consumer apps. You will manage a team of 15+ designers, own the design system, and work directly with product and engineering leadership to craft experiences that delight our premium member base. CRED is known for its distinctive design language — you will be expected to evolve it while maintaining its essence.",
+    "requirements": [
+      "10+ years in product design with at least 3 years in a design leadership role",
+      "A portfolio that demonstrates craft, systems thinking, and business impact",
+      "Experience building and scaling design systems",
+      "Strong people management skills — ability to coach and grow designers",
+      "Deep empathy for users and a track record of user-centric decision making",
+      "Experience working in a fast-paced consumer tech environment"
+    ],
+    "niceToHave": [
+      "Experience with motion design or interaction prototyping (Principle, ProtoPie)",
+      "Background in luxury or premium brand design",
+      "Experience designing for India-first products"
+    ],
+    "aboutCompany": "CRED is a members-only financial services platform for India's most creditworthy individuals. We help members manage credit, pay bills, and access exclusive rewards. Known for our iconic advertising and app design, CRED has over 16 million members.",
+    "applyUrl": "https://careers.cred.club/"
+  },
+  {
+    "id": "job-004",
+    "title": "Growth Product Manager",
+    "company": "Zepto",
+    "location": "Mumbai, India",
+    "locationType": "On-site",
+    "salary": "₹30L – ₹50L",
+    "jobType": "Full-time",
+    "experience": "3–6 years",
+    "function": "Product",
+    "postedDate": "2026-06-22",
+    "tags": ["Growth", "Quick Commerce", "Experimentation"],
+    "description": "Zepto is looking for a Growth PM to drive user acquisition, activation, and retention across our quick commerce platform. You will own the growth funnel, design and run A/B experiments, and work with marketing, data science, and engineering to move key metrics. This is a high-impact role at one of India's fastest-growing startups, where you will see the results of your work within hours of shipping.",
+    "requirements": [
+      "3+ years of product management or growth experience",
+      "Strong data literacy — comfortable running SQL queries and interpreting experiments",
+      "Experience with A/B testing platforms and funnel analysis tools",
+      "Understanding of push notifications, in-app messaging, and lifecycle marketing",
+      "Bias for speed and ability to ship and learn quickly",
+      "Excellent stakeholder management skills"
+    ],
+    "niceToHave": [
+      "Prior experience in e-commerce or quick commerce",
+      "Experience with tools like Amplitude, Clevertap, or Mixpanel",
+      "Background in economics or statistics"
+    ],
+    "aboutCompany": "Zepto is India's fastest-growing quick commerce platform, delivering groceries and essentials in under 10 minutes. Founded in 2021, Zepto operates across 10+ Indian cities and is valued at $5 billion. We are on a mission to redefine urban convenience.",
+    "applyUrl": "https://zepto.in/careers"
+  },
+  {
+    "id": "job-005",
+    "title": "Data Scientist – Recommendations",
+    "company": "Swiggy",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹25L – ₹40L",
+    "jobType": "Full-time",
+    "experience": "2–5 years",
+    "function": "Data",
+    "postedDate": "2026-06-17",
+    "tags": ["ML", "Python", "Recommender Systems"],
+    "description": "Swiggy's Data Science team is hiring a Data Scientist to improve our restaurant and dish recommendation systems. You will build machine learning models that personalise the Swiggy experience for 100M+ users, collaborate with platform engineers to deploy models to production, and run experiments to validate impact. This role sits at the intersection of applied ML and product thinking.",
+    "requirements": [
+      "2+ years of industry experience in data science or applied ML",
+      "Proficiency in Python (pandas, scikit-learn, PyTorch/TensorFlow)",
+      "Experience building and evaluating recommendation or ranking systems",
+      "Strong understanding of statistical testing and experiment design",
+      "Ability to communicate complex analyses to non-technical stakeholders",
+      "Experience with SQL and large-scale data processing (Spark, BigQuery)"
+    ],
+    "niceToHave": [
+      "Published research in ML or recommender systems",
+      "Experience with real-time feature serving systems",
+      "Prior experience at a food tech or marketplace company"
+    ],
+    "aboutCompany": "Swiggy is India's leading food and quick commerce platform, connecting over 100 million users with 300,000+ restaurant partners across 500 cities. Our Data Science team is central to personalising the discovery experience and maximising order conversion.",
+    "applyUrl": "https://swiggy.com/careers"
+  },
+  {
+    "id": "job-006",
+    "title": "Senior Marketing Manager – Performance",
+    "company": "Meesho",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹20L – ₹35L",
+    "jobType": "Full-time",
+    "experience": "4–7 years",
+    "function": "Marketing",
+    "postedDate": "2026-06-19",
+    "tags": ["Performance Marketing", "Google Ads", "D2C"],
+    "description": "Meesho is hiring a Senior Marketing Manager to lead performance marketing campaigns across Google, Meta, and programmatic channels. You will manage multi-crore budgets, optimise CAC and ROI, and work closely with the analytics team to drive seller and buyer growth. This is a strategic role that requires both analytical rigour and creative marketing instincts.",
+    "requirements": [
+      "4+ years of performance marketing experience, with at least 2 years managing significant budgets",
+      "Deep expertise in Google Ads, Meta Ads, and attribution tools",
+      "Strong analytical skills — able to build and interpret attribution models",
+      "Experience with app marketing (UAC, SKAdNetwork) is a plus",
+      "Ability to manage agencies and multiple campaigns simultaneously",
+      "Excellent communication and stakeholder management skills"
+    ],
+    "niceToHave": [
+      "Experience in e-commerce or social commerce",
+      "Knowledge of vernacular digital marketing for Bharat audiences",
+      "Experience with programmatic DSPs"
+    ],
+    "aboutCompany": "Meesho is India's fastest-growing e-commerce platform, enabling 130 million customers and 1.3 million supplier partners. Our unique social commerce model makes online selling accessible to small businesses across India. We are backed by SoftBank, Prosus, and Facebook.",
+    "applyUrl": "https://meesho.com/careers"
+  },
+  {
+    "id": "job-007",
+    "title": "Senior Software Engineer – iOS",
+    "company": "Ola",
+    "location": "Bangalore, India",
+    "locationType": "On-site",
+    "salary": "₹30L – ₹50L",
+    "jobType": "Full-time",
+    "experience": "4–7 years",
+    "function": "Engineering",
+    "postedDate": "2026-06-14",
+    "tags": ["Swift", "iOS", "Mobility"],
+    "description": "Ola is looking for a Senior iOS Engineer to join our Rider Experience team. You will build features for the Ola app used by millions of riders daily, improve app performance, and collaborate with product and design teams to craft delightful mobile experiences. You will be part of a high-velocity team that ships updates every two weeks.",
+    "requirements": [
+      "4+ years of iOS development experience using Swift",
+      "Deep understanding of UIKit, SwiftUI, and iOS SDK",
+      "Experience with RESTful APIs, JSON, and asynchronous programming",
+      "Strong grasp of iOS memory management and performance optimisation",
+      "Experience with CI/CD pipelines and automated testing (XCTest)",
+      "Familiarity with modular architecture patterns (MVVM, Clean Architecture)"
+    ],
+    "niceToHave": [
+      "Experience with real-time location and maps (MapKit, Google Maps SDK)",
+      "Contributions to open-source iOS projects",
+      "Experience building apps with offline-first capabilities"
+    ],
+    "aboutCompany": "Ola is India's leading mobility platform, connecting millions of riders and drivers across 250+ cities in India and abroad. We operate across ride-hailing, electric vehicles, and financial services. Our mission is to build mobility for a billion people.",
+    "applyUrl": "https://ola.com/careers"
+  },
+  {
+    "id": "job-008",
+    "title": "Product Manager – B2B SaaS",
+    "company": "Chargebee",
+    "location": "Chennai, India",
+    "locationType": "Remote",
+    "salary": "₹25L – ₹40L",
+    "jobType": "Full-time",
+    "experience": "3–6 years",
+    "function": "Product",
+    "postedDate": "2026-06-21",
+    "tags": ["SaaS", "B2B", "Subscription Management"],
+    "description": "Chargebee is looking for a Product Manager to own our subscription billing and revenue recognition product area. You will work with enterprise customers to understand their billing complexity, define requirements, and work with engineering to build scalable solutions. This role requires a deep interest in financial workflows, international tax compliance, and the nuances of enterprise software.",
+    "requirements": [
+      "3+ years of product management experience in B2B SaaS",
+      "Understanding of subscription billing, recurring revenue, and SaaS metrics",
+      "Experience working directly with enterprise customers and conducting discovery interviews",
+      "Ability to write detailed PRDs and break down complex problems",
+      "Strong cross-functional collaboration skills",
+      "Comfort with ambiguity and ability to prioritise effectively"
+    ],
+    "niceToHave": [
+      "Knowledge of accounting principles (ASC 606, IFRS 15)",
+      "Experience with invoicing or ERP systems",
+      "Prior experience at a fintech or SaaS company"
+    ],
+    "aboutCompany": "Chargebee is the subscription management platform for SaaS companies worldwide. We help 5000+ businesses automate their billing operations, manage subscriptions, and recognize revenue. Our customers include Freshworks, Okta, and Calendly. We are backed by Tiger Global and Insight Partners.",
+    "applyUrl": "https://chargebee.com/careers/"
+  },
+  {
+    "id": "job-009",
+    "title": "ML Engineer – NLP",
+    "company": "Sarvam AI",
+    "location": "Bangalore, India",
+    "locationType": "On-site",
+    "salary": "₹35L – ₹60L",
+    "jobType": "Full-time",
+    "experience": "3–6 years",
+    "function": "Data",
+    "postedDate": "2026-06-16",
+    "tags": ["NLP", "LLMs", "Python", "Indic Languages"],
+    "description": "Sarvam AI is building large language models for Indian languages and we are looking for an ML Engineer specialising in NLP. You will train and fine-tune language models, build data pipelines for multilingual datasets, and collaborate with researchers to push the state of the art in Indic NLP. This is a rare opportunity to work on foundation models that will shape how India interacts with AI.",
+    "requirements": [
+      "3+ years of experience in NLP or ML engineering",
+      "Proficiency in Python, PyTorch or JAX",
+      "Hands-on experience training transformer-based models",
+      "Understanding of tokenisation, embeddings, and language model evaluation",
+      "Experience working with large datasets (TB scale) and distributed training",
+      "Strong first principles thinking and research mindset"
+    ],
+    "niceToHave": [
+      "Experience with low-resource languages or multilingual NLP",
+      "Published papers at ACL, EMNLP, or NAACL",
+      "Experience with RLHF or preference learning"
+    ],
+    "aboutCompany": "Sarvam AI is India's AI startup focused on building sovereign AI infrastructure for India. We are creating large language models that speak and understand India's 22 languages natively. Backed by Lightspeed and Peak XV, we are a team of researchers and engineers from IITs, IISc, and top global universities.",
+    "applyUrl": "https://sarvam.ai/careers"
+  },
+  {
+    "id": "job-010",
+    "title": "Brand Designer",
+    "company": "Groww",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹15L – ₹25L",
+    "jobType": "Full-time",
+    "experience": "2–5 years",
+    "function": "Design",
+    "postedDate": "2026-06-23",
+    "tags": ["Branding", "Motion", "Figma"],
+    "description": "Groww is hiring a Brand Designer to shape the visual identity of India's most trusted investment platform. You will create brand assets, design marketing campaigns, develop motion graphics, and ensure brand consistency across all touchpoints. You will collaborate with marketing, content, and product teams to bring Groww's brand to life across digital and offline channels.",
+    "requirements": [
+      "2+ years of brand or graphic design experience",
+      "Strong portfolio demonstrating illustration, typography, and layout skills",
+      "Proficiency in Figma and Adobe Creative Suite (Illustrator, Photoshop, After Effects)",
+      "Experience with motion design and animated content",
+      "Understanding of brand strategy and visual identity systems",
+      "Ability to handle multiple projects with tight deadlines"
+    ],
+    "niceToHave": [
+      "Experience designing for fintech or financial products",
+      "3D design skills (Blender or Cinema 4D)",
+      "Experience with video production and editing"
+    ],
+    "aboutCompany": "Groww is India's largest investment platform with 10 million+ active investors. We make investing simple and accessible for every Indian, offering stocks, mutual funds, ETFs, and fixed deposits. Backed by Tiger Global and Y Combinator, Groww is on a mission to democratise wealth creation.",
+    "applyUrl": "https://groww.in/careers"
+  },
+  {
+    "id": "job-011",
+    "title": "Engineering Manager – Backend",
+    "company": "BrowserStack",
+    "location": "Mumbai, India",
+    "locationType": "Hybrid",
+    "salary": "₹45L – ₹70L",
+    "jobType": "Full-time",
+    "experience": "8–12 years",
+    "function": "Engineering",
+    "postedDate": "2026-06-12",
+    "tags": ["Engineering Management", "Node.js", "Cloud Infrastructure"],
+    "description": "BrowserStack is looking for an Engineering Manager to lead a team of 8–12 backend engineers building our global testing infrastructure. You will set technical direction, drive hiring, manage performance, and remove blockers for your team. This is an IC-to-manager role with a strong technical component — you are expected to be deeply involved in architecture decisions and code reviews.",
+    "requirements": [
+      "8+ years of software engineering experience with 2+ years in an EM role",
+      "Strong technical background in backend systems (Node.js, Python, or Go)",
+      "Experience managing distributed, cloud-based infrastructure at scale",
+      "Track record of hiring and growing engineering teams",
+      "Excellent communication and ability to influence without authority",
+      "Experience with agile development practices"
+    ],
+    "niceToHave": [
+      "Experience at a developer tools or infrastructure company",
+      "Knowledge of browser automation and testing frameworks",
+      "Prior experience in a product company that serves global customers"
+    ],
+    "aboutCompany": "BrowserStack is the world's leading software testing platform, enabling developers at Google, Microsoft, and Twitter to test on 30,000+ real devices and browsers. With 50,000+ customers across 135 countries, BrowserStack is a profitable, bootstrapped unicorn headquartered in Mumbai and San Francisco.",
+    "applyUrl": "https://browserstack.com/careers"
+  },
+  {
+    "id": "job-012",
+    "title": "Product Analyst",
+    "company": "Urban Company",
+    "location": "Gurugram, India",
+    "locationType": "On-site",
+    "salary": "₹12L – ₹20L",
+    "jobType": "Full-time",
+    "experience": "1–3 years",
+    "function": "Data",
+    "postedDate": "2026-06-24",
+    "tags": ["SQL", "Product Analytics", "Dashboards"],
+    "description": "Urban Company is seeking a Product Analyst to work alongside our product and engineering teams, turning data into actionable insights. You will build dashboards, run funnel analyses, define and monitor KPIs, and support A/B test design and evaluation. This is a great role for someone who wants to understand how a marketplace product works and influence key product decisions with data.",
+    "requirements": [
+      "1–3 years of experience in product analytics or business intelligence",
+      "Strong proficiency in SQL and data visualisation tools (Tableau, Looker, or Metabase)",
+      "Experience with funnel analysis, cohort analysis, and retention modelling",
+      "Ability to communicate findings clearly to both technical and non-technical audiences",
+      "Attention to detail and a passion for data quality",
+      "Bachelor's degree in a quantitative field"
+    ],
+    "niceToHave": [
+      "Experience with Python or R for statistical analysis",
+      "Knowledge of marketplace or two-sided platform economics",
+      "Familiarity with experiment design and statistical significance testing"
+    ],
+    "aboutCompany": "Urban Company is India's largest home services platform, connecting skilled professionals with customers for beauty, home repair, cleaning, and wellness services. With 50,000+ service partners across 50 cities in India and the UAE, we are building the future of the services economy.",
+    "applyUrl": "https://careers.urbancompany.com/"
+  },
+  {
+    "id": "job-013",
+    "title": "Content Marketing Lead",
+    "company": "Clevertap",
+    "location": "Mumbai, India",
+    "locationType": "Remote",
+    "salary": "₹18L – ₹28L",
+    "jobType": "Full-time",
+    "experience": "4–7 years",
+    "function": "Marketing",
+    "postedDate": "2026-06-11",
+    "tags": ["Content Strategy", "B2B Marketing", "SaaS"],
+    "description": "CleverTap is looking for a Content Marketing Lead to build and execute our content strategy for the global B2B SaaS market. You will create long-form content, manage a team of writers, run SEO strategy, and collaborate with demand generation to turn content into pipeline. This is a strategic role for someone who understands both editorial craft and the science of content-driven growth.",
+    "requirements": [
+      "4+ years in content marketing, preferably in B2B SaaS",
+      "Demonstrated ability to drive traffic, leads, and pipeline through content",
+      "Strong writing skills and editorial instincts — you must be a great writer yourself",
+      "Experience with SEO tools (SEMrush, Ahrefs, Google Search Console)",
+      "Ability to manage and grow a team of writers and freelancers",
+      "Data-driven mindset with experience tracking content ROI"
+    ],
+    "niceToHave": [
+      "Experience in martech, CRM, or mobile marketing domain",
+      "Experience with content localisation for international markets",
+      "Podcast or video content production experience"
+    ],
+    "aboutCompany": "CleverTap is the world's leading retention cloud, enabling 10,000+ global brands to increase customer lifetime value. We help companies like Domino's, Unilever, and Air Asia personalise customer communication across mobile, web, and email. Headquartered in Mountain View with a large India presence.",
+    "applyUrl": "https://clevertap.com/careers/"
+  },
+  {
+    "id": "job-014",
+    "title": "UX Researcher",
+    "company": "Flipkart",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹18L – ₹30L",
+    "jobType": "Full-time",
+    "experience": "3–6 years",
+    "function": "Design",
+    "postedDate": "2026-06-20",
+    "tags": ["User Research", "Qualitative", "E-commerce"],
+    "description": "Flipkart is hiring a UX Researcher to generate deep insights about the next billion internet users in India. You will plan and execute qualitative and quantitative research studies, synthesise findings into actionable recommendations, and advocate for users in product and design decisions. You will work across categories including fashion, electronics, and groceries.",
+    "requirements": [
+      "3+ years of UX research experience in a product company",
+      "Proficiency in qualitative methods (usability testing, IDIs, diary studies, contextual enquiry)",
+      "Experience with quantitative methods (surveys, card sorting, eye tracking)",
+      "Strong storytelling skills — ability to communicate research findings compellingly",
+      "Experience working with diverse, semi-urban, and rural user groups is a plus",
+      "Degree in HCI, cognitive science, psychology, or related field"
+    ],
+    "niceToHave": [
+      "Experience with eye-tracking or biometric research tools",
+      "Proficiency in Hindi or a regional Indian language",
+      "Prior experience in e-commerce or marketplace research"
+    ],
+    "aboutCompany": "Flipkart is India's leading e-commerce marketplace, serving 450 million+ registered customers across 27,000 pin codes. A Walmart company, Flipkart operates across categories including electronics, fashion, grocery, and furniture. Our Design team is building for the next billion online shoppers in India.",
+    "applyUrl": "https://flipkartcareers.com/"
+  },
+  {
+    "id": "job-015",
+    "title": "Senior Data Engineer",
+    "company": "Navi Technologies",
+    "location": "Bangalore, India",
+    "locationType": "Hybrid",
+    "salary": "₹25L – ₹40L",
+    "jobType": "Full-time",
+    "experience": "4–7 years",
+    "function": "Data",
+    "postedDate": "2026-06-13",
+    "tags": ["Spark", "dbt", "Data Platform"],
+    "description": "Navi is hiring a Senior Data Engineer to build and scale our data platform powering credit underwriting, fraud detection, and business intelligence. You will design data pipelines, build analytical data models, ensure data quality, and collaborate with data scientists and product teams to deliver reliable data infrastructure. This is a senior role with significant ownership over our data architecture.",
+    "requirements": [
+      "4+ years of data engineering experience",
+      "Strong proficiency in Python and SQL",
+      "Hands-on experience with Spark, Airflow, and dbt",
+      "Experience designing and maintaining data warehouses (BigQuery, Snowflake, or Redshift)",
+      "Understanding of data modelling concepts (dimensional modelling, data vault)",
+      "Experience building real-time data pipelines using Kafka or Flink"
+    ],
+    "niceToHave": [
+      "Experience in fintech or credit lending domain",
+      "Knowledge of data governance and data quality frameworks",
+      "Experience with ML feature stores"
+    ],
+    "aboutCompany": "Navi Technologies is a fintech company founded by Sachin Bansal (co-founder of Flipkart) focused on making financial services accessible to all Indians. We offer home loans, personal loans, health insurance, and mutual funds through a fully digital, paperless process. Navi is a SEBI-registered AMC and RBI-regulated NBFC.",
+    "applyUrl": "https://navi.com/careers"
+  }
+]
