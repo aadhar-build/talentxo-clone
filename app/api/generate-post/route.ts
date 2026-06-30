@@ -50,15 +50,19 @@ function buildPrompt(req: GenerateRequest): string {
     Enthusiastic: 'high energy, excitement-driven language',
   }[tone]
 
-  const reqs = job.requirements.slice(0, 2).join('; ')
-
   return `You are a LinkedIn content expert helping a recruiter write a short post about a job opening.
 
 JOB:
 Title: ${job.title} at ${job.company}
 Location: ${job.location} (${job.locationType}) | ${job.salary} | ${job.experience}
 Function: ${job.function} | Tags: ${job.tags.join(', ')}
-Key requirements: ${reqs}
+
+About the role: ${job.description}
+
+Requirements: ${job.requirements.join('; ')}
+Nice to have: ${job.niceToHave.join('; ')}
+
+About ${job.company}: ${job.aboutCompany}
 
 RECRUITER:
 Name: ${recruiterName || 'the recruiter'}
@@ -73,6 +77,8 @@ Generate exactly 3 distinct variants of the post (3–5 lines each), each using 
 1. "direct" — punchy, leads straight with the opportunity and urgency.
 2. "story" — opens by naming a problem or trend the reader relates to, then pivots into the role.
 3. "personal" — opens using the recruiter's own personal note as the hook. If no personal note was given, open with an authentic, specific reason the recruiter is excited about this particular role — not generic.
+
+Ground every variant in the specific details above — name real things mentioned in the role description or company description (e.g. actual products, named clients, specific metrics, concrete responsibilities) instead of generic resume-speak like "exciting opportunity," "leading company," or "seasoned professional." Each variant should read like it could only be written about this exact job at this exact company, not a template with the name swapped in.
 
 Every variant must: end with the apply link placeholder [APPLY_LINK], end with 4–5 relevant hashtags, and sound like the recruiter's own voice.
 
