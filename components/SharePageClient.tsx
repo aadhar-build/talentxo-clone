@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Loader2, RefreshCw, CheckCircle, ArrowLeft, Pencil, ChevronDown, ChevronUp,
   ThumbsUp, MessageCircle, Repeat2, Send, MoreHorizontal, Globe,
+  Sparkles, SlidersHorizontal, Copy, Check,
 } from 'lucide-react'
 import type { Job } from '@/lib/jobs'
 
@@ -16,6 +17,12 @@ function LinkedInIcon({ className = 'w-4 h-4' }: { className?: string }) {
       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
     </svg>
   )
+}
+
+function getInitials(name: string, fallback = 'RX'): string {
+  const trimmed = name.trim()
+  if (!trimmed) return fallback
+  return trimmed.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
 }
 
 function buildDefaultPost(job: Job): string {
@@ -43,9 +50,7 @@ const REACTION_BADGES = [
 ]
 
 function LinkedInFeedCard({ post, name, bio, job }: { post: string; name: string; bio: string; job: Job }) {
-  const initials = name.trim()
-    ? name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
-    : 'RX'
+  const initials = getInitials(name)
   const companyInitials = job.company.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
   const domain = APP_URL.replace(/^https?:\/\//, '')
 
@@ -138,6 +143,7 @@ function LinkedInFeedCard({ post, name, bio, job }: { post: string; name: string
 
 type Tone = 'Professional' | 'Casual' | 'Enthusiastic'
 type Audience = 'General' | 'Senior ICs' | 'Fresh Grads' | 'Career Switchers'
+type Variant = { angle: string; label: string; text: string }
 
 type Props = {
   job: Job
@@ -150,6 +156,7 @@ type Props = {
 const TONES: Tone[] = ['Professional', 'Casual', 'Enthusiastic']
 const AUDIENCES: Audience[] = ['General', 'Senior ICs', 'Fresh Grads', 'Career Switchers']
 const SESSION_KEY = 'talentxo_share_state'
+const LINKEDIN_FEED_URL = 'https://www.linkedin.com/feed/'
 
 export default function SharePageClient({ job, jobId, recruiterName: initialName, isAuthenticated, personId }: Props) {
   const router = useRouter()
@@ -159,8 +166,14 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
   const [personalNote, setPersonalNote] = useState('')
   const [tone, setTone] = useState<Tone>('Professional')
   const [audience, setAudience] = useState<Audience>('General')
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const [shortPost, setShortPost] = useState(() => buildDefaultPost(job))
+  const [posts, setPosts] = useState<Variant[]>(() => [
+    { angle: 'template', label: 'Quick start', text: buildDefaultPost(job) },
+  ])
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activePost = posts[activeIndex]?.text ?? ''
+
   const [isGenerating, setIsGenerating] = useState(false)
   const [generateError, setGenerateError] = useState('')
   const [regenerationCount, setRegenerationCount] = useState(0)
@@ -168,6 +181,19 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
 
   const [postStatus, setPostStatus] = useState<'idle' | 'posting' | 'success' | 'error'>('idle')
   const [postError, setPostError] = useState('')
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
+
+  // Sticky bar appears once the user scrolls into the "Personalize" section
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  const [showStickyBar, setShowStickyBar] = useState(false)
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => setShowStickyBar(entry.isIntersecting), { threshold: 0 })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   // Restore from sessionStorage after OAuth redirect
   useEffect(() => {
@@ -180,7 +206,8 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
           if (s.personalNote) setPersonalNote(s.personalNote)
           if (s.tone) setTone(s.tone)
           if (s.audience) setAudience(s.audience)
-          if (s.shortPost) setShortPost(s.shortPost)
+          if (Array.isArray(s.posts) && s.posts.length > 0) setPosts(s.posts)
+          if (typeof s.activeIndex === 'number') setActiveIndex(s.activeIndex)
         }
         sessionStorage.removeItem(SESSION_KEY)
       }
@@ -190,9 +217,13 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
   const saveToSession = () => {
     try {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        jobId, recruiterBio, personalNote, tone, audience, shortPost,
+        jobId, recruiterBio, personalNote, tone, audience, posts, activeIndex,
       }))
     } catch {}
+  }
+
+  const updateActiveText = (text: string) => {
+    setPosts((prev) => prev.map((p, i) => (i === activeIndex ? { ...p, text } : p)))
   }
 
   const handleGenerate = async () => {
@@ -214,7 +245,8 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
         throw new Error(data.error ?? 'Generation failed')
       }
       const data = await res.json()
-      setShortPost(data.short)
+      setPosts(data.variants)
+      setActiveIndex(0)
       setRegenerationCount((c) => c + 1)
       setPostStatus('idle')
     } catch (err) {
@@ -236,7 +268,7 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
       const res = await fetch('/api/linkedin/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: shortPost }),
+        body: JSON.stringify({ text: activePost }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -249,8 +281,22 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
     }
   }
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(activePost)
+      setCopyStatus('copied')
+      window.open(LINKEDIN_FEED_URL, '_blank', 'noopener,noreferrer')
+    } catch {
+      setCopyStatus('error')
+    } finally {
+      setTimeout(() => setCopyStatus('idle'), 2500)
+    }
+  }
+
+  const initials = getInitials(name)
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${showStickyBar && postStatus !== 'success' ? 'pb-24' : ''}`}>
       {/* Back link */}
       <button
         onClick={() => router.push(`/jobs/${jobId}`)}
@@ -285,17 +331,63 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
           <>
             <p className="text-xs font-medium text-gray-400 uppercase tracking-wide text-center">Preview — how it looks in the LinkedIn feed</p>
 
+            {posts.length > 1 && !isGenerating && (
+              <div className="flex items-center justify-center gap-2">
+                {posts.map((p, i) => (
+                  <button
+                    key={p.angle}
+                    onClick={() => setActiveIndex(i)}
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                      i === activeIndex
+                        ? 'bg-[#0A66C2] text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {isGenerating ? (
               <div className="bg-white border border-gray-200 rounded-lg p-12 flex items-center justify-center">
                 <Loader2 className="w-6 h-6 animate-spin text-[#0A66C2]" />
               </div>
             ) : (
               <LinkedInFeedCard
-                post={shortPost}
+                post={activePost}
                 name={name}
                 bio={recruiterBio}
                 job={job}
               />
+            )}
+
+            {/* Generate / regenerate — kept on the hero card so first-time visitors see it immediately */}
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Generating 3 versions…
+                </>
+              ) : regenerationCount > 0 ? (
+                <>
+                  <RefreshCw className="w-4 h-4" />
+                  Regenerate 3 versions
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  Generate 3 AI versions
+                </>
+              )}
+            </button>
+
+            {generateError && (
+              <p className="text-sm text-red-500 text-center">{generateError}</p>
             )}
 
             {!isGenerating && (
@@ -317,14 +409,14 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
                 {isEditing && (
                   <div className="px-4 pb-4 border-t border-gray-100 pt-3 space-y-2">
                     <textarea
-                      value={shortPost}
-                      onChange={(e) => setShortPost(e.target.value)}
+                      value={activePost}
+                      onChange={(e) => updateActiveText(e.target.value)}
                       rows={10}
                       className="w-full text-sm border border-gray-200 rounded-xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent leading-relaxed"
                     />
                     <div className="flex justify-end">
-                      <span className={`text-xs ${shortPost.length > 3000 ? 'text-red-500' : 'text-gray-400'}`}>
-                        {shortPost.length} / 3000
+                      <span className={`text-xs ${activePost.length > 3000 ? 'text-red-500' : 'text-gray-400'}`}>
+                        {activePost.length} / 3000
                       </span>
                     </div>
                   </div>
@@ -336,23 +428,48 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
               <p className="text-sm text-red-500 text-center">{postError}</p>
             )}
 
-            <button
-              onClick={handlePost}
-              disabled={postStatus === 'posting' || shortPost.length > 3000 || shortPost.trim().length === 0 || isGenerating}
-              className="flex items-center justify-center gap-2 w-full bg-[#0A66C2] hover:bg-[#084d93] text-white font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {postStatus === 'posting' ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Posting…
-                </>
-              ) : (
-                <>
-                  <LinkedInIcon />
-                  {isAuthenticated ? 'Post to LinkedIn' : 'Connect LinkedIn & Post'}
-                </>
-              )}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                onClick={handlePost}
+                disabled={postStatus === 'posting' || activePost.length > 3000 || activePost.trim().length === 0 || isGenerating}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#084d93] text-white font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {postStatus === 'posting' ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Posting…
+                  </>
+                ) : (
+                  <>
+                    <LinkedInIcon />
+                    {isAuthenticated ? 'Post to LinkedIn' : 'Connect LinkedIn & Post'}
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={handleCopy}
+                disabled={activePost.trim().length === 0 || isGenerating}
+                className="flex-1 flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {copyStatus === 'copied' ? (
+                  <>
+                    <Check className="w-4 h-4 text-green-600" />
+                    Copied!
+                  </>
+                ) : copyStatus === 'error' ? (
+                  <>Couldn&apos;t copy — try manually</>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    Copy &amp; open LinkedIn
+                  </>
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 text-center">
+              No LinkedIn connection needed — copies the post so you can paste it yourself.
+            </p>
           </>
         )}
       </div>
@@ -360,6 +477,7 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
       {/* Customize — personalization controls, below the fold */}
       {postStatus !== 'success' && (
         <div className="mt-10 pt-8 border-t border-gray-100">
+          <div ref={sentinelRef} />
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Personalize this post</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -398,73 +516,95 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
                 placeholder="Why are you excited about this role? What makes this company special?"
                 className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
-            </div>
-
-            {/* Tone */}
-            <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 space-y-3">
-              <h3 className="font-semibold text-gray-900 text-sm">Tone</h3>
-              <div className="flex flex-wrap gap-2">
-                {TONES.map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTone(t)}
-                    className={`text-sm px-4 py-1.5 rounded-full font-medium transition-colors ${
-                      tone === t
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Audience */}
-            <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 space-y-3">
-              <h3 className="font-semibold text-gray-900 text-sm">Target audience</h3>
-              <div className="flex flex-wrap gap-2">
-                {AUDIENCES.map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => setAudience(a)}
-                    className={`text-sm px-4 py-1.5 rounded-full font-medium transition-colors ${
-                      audience === a
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {a}
-                  </button>
-                ))}
-              </div>
+              <p className="text-xs text-gray-400">Used as the hook for the &ldquo;Personal&rdquo; version.</p>
             </div>
           </div>
 
-          <div className="max-w-sm mx-auto mt-5 space-y-2">
+          {/* Advanced options — tone & audience, collapsed by default */}
+          <div className="mt-4 bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
             <button
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              onClick={() => setShowAdvanced((a) => !a)}
+              className="w-full flex items-center justify-between px-5 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
             >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Generating…
-                </>
-              ) : regenerationCount > 0 ? (
-                <>
-                  <RefreshCw className="w-4 h-4" />
-                  Regenerate with AI
-                </>
-              ) : (
-                'Generate with AI'
-              )}
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal className="w-3.5 h-3.5 text-gray-400" />
+                Advanced options — tone &amp; audience
+              </span>
+              {showAdvanced
+                ? <ChevronUp className="w-4 h-4 text-gray-400" />
+                : <ChevronDown className="w-4 h-4 text-gray-400" />
+              }
             </button>
 
-            {generateError && (
-              <p className="text-sm text-red-500 text-center">{generateError}</p>
+            {showAdvanced && (
+              <div className="px-5 pb-5 border-t border-gray-100 pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm mb-2">Tone</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {TONES.map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTone(t)}
+                        className={`text-sm px-4 py-1.5 rounded-full font-medium transition-colors ${
+                          tone === t
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm mb-2">Target audience</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {AUDIENCES.map((a) => (
+                      <button
+                        key={a}
+                        onClick={() => setAudience(a)}
+                        className={`text-sm px-4 py-1.5 rounded-full font-medium transition-colors ${
+                          audience === a
+                            ? 'bg-indigo-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Sticky mini-bar — keeps Post/Copy reachable once the user scrolls past the hero */}
+      {showStickyBar && postStatus !== 'success' && (
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 shadow-lg px-4 py-3">
+          <div className="max-w-xl mx-auto flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-[#0A66C2] flex items-center justify-center text-white font-bold text-xs shrink-0">
+              {initials}
+            </div>
+            <p className="flex-1 min-w-0 text-xs text-gray-500 truncate">{activePost}</p>
+            <button
+              onClick={handleCopy}
+              disabled={activePost.trim().length === 0 || isGenerating}
+              className="shrink-0 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors disabled:opacity-60"
+              aria-label="Copy post and open LinkedIn"
+            >
+              {copyStatus === 'copied' ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+            </button>
+            <button
+              onClick={handlePost}
+              disabled={postStatus === 'posting' || activePost.length > 3000 || activePost.trim().length === 0 || isGenerating}
+              className="shrink-0 flex items-center gap-1.5 bg-[#0A66C2] hover:bg-[#084d93] text-white font-semibold text-sm py-2 px-3 rounded-lg transition-colors disabled:opacity-60"
+            >
+              {postStatus === 'posting' ? <Loader2 className="w-4 h-4 animate-spin" /> : <LinkedInIcon className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">{isAuthenticated ? 'Post' : 'Connect'}</span>
+            </button>
           </div>
         </div>
       )}

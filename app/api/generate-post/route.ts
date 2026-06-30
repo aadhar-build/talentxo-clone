@@ -13,6 +13,35 @@ type GenerateRequest = {
   isRegeneration?: boolean
 }
 
+type Variant = { angle: string; label: string; text: string }
+
+const ANGLE_LABELS: Record<string, string> = {
+  direct: 'Direct',
+  story: 'Story',
+  personal: 'Personal',
+}
+
+const RESPONSE_SCHEMA = {
+  type: 'object',
+  properties: {
+    variants: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          angle: { type: 'string', enum: ['direct', 'story', 'personal'] },
+          label: { type: 'string' },
+          text: { type: 'string' },
+        },
+        required: ['angle', 'label', 'text'],
+      },
+      minItems: 3,
+      maxItems: 3,
+    },
+  },
+  required: ['variants'],
+}
+
 function buildPrompt(req: GenerateRequest): string {
   const { job, tone, audience, recruiterName, recruiterBio, personalNote } = req
   const toneDesc = {
@@ -40,10 +69,14 @@ SETTINGS:
 Tone: ${tone} — use ${toneDesc}
 Target audience: ${audience}
 
-Write ONE short LinkedIn post (3–5 lines): punchy, direct, ends with apply link placeholder [APPLY_LINK].
-It must feel like the recruiter's own voice. End with 4–5 relevant hashtags.
+Generate exactly 3 distinct variants of the post (3–5 lines each), each using a different angle:
+1. "direct" — punchy, leads straight with the opportunity and urgency.
+2. "story" — opens by naming a problem or trend the reader relates to, then pivots into the role.
+3. "personal" — opens using the recruiter's own personal note as the hook. If no personal note was given, open with an authentic, specific reason the recruiter is excited about this particular role — not generic.
 
-Respond ONLY with valid JSON, no markdown fences: {"short": "..."}`
+Every variant must: end with the apply link placeholder [APPLY_LINK], end with 4–5 relevant hashtags, and sound like the recruiter's own voice.
+
+Respond with JSON only, matching: {"variants":[{"angle":"direct","label":"Direct","text":"..."},{"angle":"story","label":"Story","text":"..."},{"angle":"personal","label":"Personal","text":"..."}]}`
 }
 
 export async function POST(request: Request) {
@@ -79,7 +112,11 @@ export async function POST(request: Request) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.9 },
+          generationConfig: {
+            temperature: 0.9,
+            responseMimeType: 'application/json',
+            responseSchema: RESPONSE_SCHEMA,
+          },
         }),
       }
     )
@@ -104,18 +141,28 @@ export async function POST(request: Request) {
   // Strip any markdown fences just in case
   const cleaned = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/, '').trim()
 
-  let short: string
+  let variants: Variant[]
   try {
     const parsed = JSON.parse(cleaned)
-    short = parsed.short
-    if (!short || typeof short !== 'string') throw new Error('Missing short field')
+    if (!Array.isArray(parsed.variants) || parsed.variants.length === 0) {
+      throw new Error('Missing variants array')
+    }
+    variants = parsed.variants.map((v: Partial<Variant>, i: number) => {
+      const angle = typeof v.angle === 'string' ? v.angle : ['direct', 'story', 'personal'][i] ?? `variant-${i}`
+      const label = typeof v.label === 'string' && v.label ? v.label : ANGLE_LABELS[angle] ?? angle
+      if (typeof v.text !== 'string' || !v.text) throw new Error('Missing variant text')
+      return { angle, label, text: v.text }
+    })
   } catch {
     return NextResponse.json({ error: 'Failed to parse generated content' }, { status: 502 })
   }
 
-  // Replace apply link placeholder
+  // Replace apply link placeholder in every variant
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
-  short = short.replace('[APPLY_LINK]', `${appUrl}/jobs/${job.id}`)
+  variants = variants.map((v) => ({
+    ...v,
+    text: v.text.replace('[APPLY_LINK]', `${appUrl}/jobs/${job.id}`),
+  }))
 
   const ph = getPostHog()
   const distinctId = personId ?? 'anonymous'
@@ -130,7 +177,9 @@ export async function POST(request: Request) {
       hasPersonalNote: !!personalNote,
       model: 'gemini-2.5-flash',
       latencyMs,
-      shortLength: short.length,
+      variantCount: variants.length,
+      variantAngles: variants.map((v) => v.angle),
+      variantLengths: variants.map((v) => v.text.length),
     },
   })
 
@@ -141,7 +190,7 @@ export async function POST(request: Request) {
       $ai_provider: 'google',
       $ai_model: 'gemini-2.5-flash',
       $ai_input: [{ role: 'user', content: prompt }],
-      $ai_output_choices: [{ message: { role: 'assistant', content: rawText } }],
+      $ai_output_choices: variants.map((v) => ({ message: { role: 'assistant', content: v.text }, angle: v.angle })),
       $ai_input_tokens: usageInput,
       $ai_output_tokens: usageOutput,
       $ai_latency: latencyMs / 1000,
@@ -152,5 +201,5 @@ export async function POST(request: Request) {
     },
   })
 
-  return NextResponse.json({ short })
+  return NextResponse.json({ variants })
 }
