@@ -143,7 +143,7 @@ function LinkedInFeedCard({ post, name, bio, job }: { post: string; name: string
 
 type Tone = 'Professional' | 'Casual' | 'Enthusiastic'
 type Audience = 'General' | 'Senior ICs' | 'Fresh Grads' | 'Career Switchers'
-type Variant = { angle: string; label: string; text: string }
+type Variant = { angle: string; label: string; text: string; originalText: string }
 
 type Props = {
   job: Job
@@ -168,11 +168,15 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
   const [audience, setAudience] = useState<Audience>('General')
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const [posts, setPosts] = useState<Variant[]>(() => [
-    { angle: 'template', label: 'Quick start', text: buildDefaultPost(job) },
-  ])
+  const [posts, setPosts] = useState<Variant[]>(() => {
+    const templateText = buildDefaultPost(job)
+    return [{ angle: 'template', label: 'Quick start', text: templateText, originalText: templateText }]
+  })
   const [activeIndex, setActiveIndex] = useState(0)
-  const activePost = posts[activeIndex]?.text ?? ''
+  const activeVariant = posts[activeIndex]
+  const activePost = activeVariant?.text ?? ''
+  const wasEdited = activeVariant ? activeVariant.text !== activeVariant.originalText : false
+  const [generationId, setGenerationId] = useState<string | null>(null)
 
   const [isGenerating, setIsGenerating] = useState(false)
   const [generateError, setGenerateError] = useState('')
@@ -208,6 +212,7 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
           if (s.audience) setAudience(s.audience)
           if (Array.isArray(s.posts) && s.posts.length > 0) setPosts(s.posts)
           if (typeof s.activeIndex === 'number') setActiveIndex(s.activeIndex)
+          if (typeof s.generationId === 'string') setGenerationId(s.generationId)
         }
         sessionStorage.removeItem(SESSION_KEY)
       }
@@ -217,7 +222,7 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
   const saveToSession = () => {
     try {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        jobId, recruiterBio, personalNote, tone, audience, posts, activeIndex,
+        jobId, recruiterBio, personalNote, tone, audience, posts, activeIndex, generationId,
       }))
     } catch {}
   }
@@ -245,8 +250,9 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
         throw new Error(data.error ?? 'Generation failed')
       }
       const data = await res.json()
-      setPosts(data.variants)
+      setPosts(data.variants.map((v: Omit<Variant, 'originalText'>) => ({ ...v, originalText: v.text })))
       setActiveIndex(0)
+      setGenerationId(data.generationId ?? null)
       setRegenerationCount((c) => c + 1)
       setPostStatus('idle')
     } catch (err) {
@@ -268,7 +274,16 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
       const res = await fetch('/api/linkedin/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: activePost }),
+        body: JSON.stringify({
+          text: activePost,
+          jobId,
+          generationId,
+          angle: activeVariant?.angle,
+          wasEdited,
+          tone,
+          audience,
+          regenerationCount,
+        }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -281,11 +296,29 @@ export default function SharePageClient({ job, jobId, recruiterName: initialName
     }
   }
 
+  const trackCopy = () => {
+    fetch('/api/track-copy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jobId,
+        generationId,
+        angle: activeVariant?.angle,
+        wasEdited,
+        tone,
+        audience,
+        regenerationCount,
+        personId,
+      }),
+    }).catch(() => {})
+  }
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(activePost)
       setCopyStatus('copied')
       window.open(LINKEDIN_FEED_URL, '_blank', 'noopener,noreferrer')
+      trackCopy()
     } catch {
       setCopyStatus('error')
     } finally {

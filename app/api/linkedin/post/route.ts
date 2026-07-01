@@ -17,9 +17,23 @@ export async function POST(request: Request) {
   }
 
   let text: string
+  let jobId: string | undefined
+  let generationId: string | undefined
+  let angle: string | undefined
+  let wasEdited = false
+  let tone: string | undefined
+  let audience: string | undefined
+  let regenerationCount = 0
   try {
     const body = await request.json()
     text = body.text
+    jobId = body.jobId
+    generationId = body.generationId
+    angle = body.angle
+    wasEdited = !!body.wasEdited
+    tone = body.tone
+    audience = body.audience
+    regenerationCount = body.regenerationCount ?? 0
     if (!text || typeof text !== 'string' || text.trim().length === 0) {
       return NextResponse.json({ error: 'Post text is required' }, { status: 400 })
     }
@@ -35,7 +49,16 @@ export async function POST(request: Request) {
     getPostHog()?.capture({
       distinctId: tokenData.personId,
       event: 'post_published',
-      properties: { finalLength: text.length },
+      properties: {
+        finalLength: text.length,
+        jobId,
+        generationId,
+        angle,
+        wasEdited,
+        tone,
+        audience,
+        regenerationCount,
+      },
     })
     return NextResponse.json({ success: true })
   } catch (err) {

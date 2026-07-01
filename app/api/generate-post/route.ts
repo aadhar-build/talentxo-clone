@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { getPostHog } from '@/lib/analytics'
 import type { Job } from '@/lib/jobs'
 
@@ -73,14 +74,19 @@ SETTINGS:
 Tone: ${tone} — use ${toneDesc}
 Target audience: ${audience}
 
-Generate exactly 3 distinct variants of the post (3–5 lines each), each using a different angle:
-1. "direct" — punchy, leads straight with the opportunity and urgency.
-2. "story" — opens by naming a problem or trend the reader relates to, then pivots into the role.
-3. "personal" — opens using the recruiter's own personal note as the hook. If no personal note was given, open with an authentic, specific reason the recruiter is excited about this particular role — not generic.
+Generate exactly 3 distinct variants of the post, each using a different angle AND a different structure — not just a different opening line:
 
-Ground every variant in the specific details above — name real things mentioned in the role description or company description (e.g. actual products, named clients, specific metrics, concrete responsibilities) instead of generic resume-speak like "exciting opportunity," "leading company," or "seasoned professional." Each variant should read like it could only be written about this exact job at this exact company, not a template with the name swapped in.
+1. "direct" — Short, declarative sentences. No rhetorical questions, no narrative setup. Lead with the single most compelling concrete fact from above, state the ask, close fast. End with an imperative CTA like "Apply now" or "Apply today."
+2. "story" — Open by naming a real industry trend or problem (never a rhetorical question). Stay focused on that trend/problem throughout, keep the recruiter's first-person voice minimal, and only pivot to this specific role in the second half. End with an invitational CTA like "Here's the role" or "Read more below."
+3. "personal" — Written entirely in first person, as the recruiter. Use the recruiter's personal note as the opening line if one was given; otherwise open with one specific, concrete reason this exact role stands out (not a generic "I'm excited"). End with a direct, personal CTA like "DM me" or "Reach out directly."
 
-Every variant must: end with the apply link placeholder [APPLY_LINK], end with 4–5 relevant hashtags, and sound like the recruiter's own voice.
+Formatting rules (apply to all 3):
+- Use ONLY facts stated above. Never invent metrics, client names, products, team sizes, or numbers that aren't explicitly given — if a detail isn't provided, describe it qualitatively instead of making one up.
+- Break each post into short lines or 1–2 sentence chunks separated by a blank line — never one dense paragraph. It should read like a real scannable LinkedIn post, not an essay.
+- Always leave a space (or line break) between sentences — never let two sentences run together with no separator (e.g. never "...pain points?Razorpay is...").
+- Put the apply link placeholder [APPLY_LINK] on its own line near the end.
+- End with 4–5 relevant hashtags on their own line. Where it fits naturally, let 1–2 hashtags also reflect the target audience (${audience}) alongside the role/company tags — a nice-to-have, not required.
+- Never use generic AI-sounding phrasing: no rhetorical-question openers ("Are you a...?"), "unlock your potential," "in today's fast-paced world," "look no further," "we're thrilled to announce," or similar clichés.
 
 Respond with JSON only, matching: {"variants":[{"angle":"direct","label":"Direct","text":"..."},{"angle":"story","label":"Story","text":"..."},{"angle":"personal","label":"Personal","text":"..."}]}`
 }
@@ -104,6 +110,7 @@ export async function POST(request: Request) {
   }
 
   const prompt = buildPrompt(body)
+  const generationId = randomUUID()
   const t0 = Date.now()
 
   let rawText = ''
@@ -119,7 +126,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.9,
+            temperature: 0.7,
             responseMimeType: 'application/json',
             responseSchema: RESPONSE_SCHEMA,
           },
@@ -177,11 +184,13 @@ export async function POST(request: Request) {
     distinctId,
     event: isRegeneration ? 'post_regenerated' : 'post_generated',
     properties: {
+      generationId,
       jobId: job.id,
       tone,
       audience,
       hasPersonalNote: !!personalNote,
       model: 'gemini-2.5-flash',
+      temperature: 0.7,
       latencyMs,
       variantCount: variants.length,
       variantAngles: variants.map((v) => v.angle),
@@ -200,6 +209,7 @@ export async function POST(request: Request) {
       $ai_input_tokens: usageInput,
       $ai_output_tokens: usageOutput,
       $ai_latency: latencyMs / 1000,
+      generationId,
       tone,
       audience,
       jobId: job.id,
@@ -207,5 +217,5 @@ export async function POST(request: Request) {
     },
   })
 
-  return NextResponse.json({ variants })
+  return NextResponse.json({ variants, generationId })
 }
